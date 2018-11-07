@@ -16,7 +16,7 @@ import "fmt"
 
 type Double float64
 
-func (x Double) String() string { return fmt.Sprint(float64(x)) }
+func (x Double) String() string { return fmt.Sprintf("%.6f", float64(x)) }
 
 //////////////////////////////////////////////////////////////////////////////
 //
