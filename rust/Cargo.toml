@@ -1,0 +1,10 @@
+[package]
+name = "odds"
+version = "0.1.0"
+authors = ["Michael Kerekes <michaelkerekes@gmail.com>"]
+
+[dependencies]
+
+[[bin]]
+name = "odds"
+path = "odds.rs"
