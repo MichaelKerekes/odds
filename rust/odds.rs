@@ -59,8 +59,6 @@ enum List<A> {
 
 use List::{Nil, Cons};
 
-// !!!! other ways that rust is cheating?
-// !!!! thread safe Rc
 type ListRef<A> = Ref<List<A>>;
 
 fn nil<A>() -> ListRef<A> { Ref::new(Nil) }
@@ -264,8 +262,8 @@ fn time<A, F>(string : &str, f : F) where F : Fn() -> A, A : fmt::Display {
 //////////////////////////////////////////////////////////////////////////////
 
 fn main() {
-  let w = 2;
-  let l = 2;
+  let w = 12;
+  let l = 12;
 
   time("odds          ", || odds                    (Double::half, w, l));
   time("oddsHalf      ", || oddsHalf      ::<Double>(              w, l));

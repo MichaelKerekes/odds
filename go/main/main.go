@@ -21,9 +21,7 @@ func main() {
   var l  = 12
 
   fmt.Printf("Odds                  %v\n", odds.Odds                 (pw, w, l))
-  fmt.Printf("OddsHalfZip           %v\n", odds.OddsHalfZip          (    w, l))
   fmt.Printf("OddsHalf              %v\n", odds.OddsHalf             (    w, l))
   fmt.Printf("OddsHalfArray         %v\n", odds.OddsHalfArray        (    w, l))
-  fmt.Printf("OddsHalfReversedArray %v\n", odds.OddsHalfReversedArray(    w, l))
   fmt.Printf("OddsHalfSlice         %v\n", odds.OddsHalfSlice        (    w, l))
 }

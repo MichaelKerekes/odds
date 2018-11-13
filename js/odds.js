@@ -118,11 +118,11 @@ function odds(pw, w, l) {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-function average(xs, ys) {
+function averageList(xs, ys) {
   if (xs === nil || ys == nil) {
     return nil
   } else {
-    return cons(0.5 * (xs.x + ys.x), average(xs.xs, ys.xs))
+    return cons(0.5 * (xs.x + ys.x), averageList(xs.xs, ys.xs))
   }
 }
 
@@ -132,7 +132,7 @@ function oddsHalf(w, l) {
   } else {
     var ws = cons(0, oddsHalf(w - 1, l    ))
     var ls =         oddsHalf(w    , l - 1)
-    return average(ws, ls)
+    return averageList(ws, ls)
   }
 }
 
@@ -144,7 +144,8 @@ function oddsHalf(w, l) {
 
 function array(count, f) {
   const xs = new Float64Array(count)
-  for (let i = 0; i < count; i++) { xs[i] = f(i) }
+  // !!!! arrays are zeroed by default
+  // for (let i = 0; i < count; i++) { xs[i] = f(i) }
   return xs
 }
 

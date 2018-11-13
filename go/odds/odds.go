@@ -66,10 +66,10 @@ func mapList(f func(Double) Double, xs *List) *List {
 }
 
 func zipWith(f func(Double, Double) Double, xs *List, ys *List) *List {
-  switch {
-    case xs == nil: return ys
-    case ys == nil: return xs
-    default: return cons(f(xs.head(), ys.head()), zipWith(f, xs.tail(), ys.tail()))
+  if (xs == nil || ys == nil) {
+    return nil
+  } else {
+    return cons(f(xs.head(), ys.head()), zipWith(f, xs.tail(), ys.tail()))
   }
 }
 
@@ -82,32 +82,12 @@ func zipWith(f func(Double, Double) Double, xs *List, ys *List) *List {
 func oneList(w int) *List { return cons(1, replicate(w, 0)) }
 
 func Odds(pw Double, w int, l int) *List {
-  switch {
-    case w == 0: return oneList(w)
-    case l == 0: return oneList(w)
-    default:
-      var ws = cons(0, mapList(func(x Double) Double { return x * pw       }, Odds(pw, w - 1, l    )))
-      var ls =         mapList(func(x Double) Double { return x * (1 - pw) }, Odds(pw, w    , l - 1))
-      return zipWith(func(x Double, y Double) Double { return x + y }, ws, ls)
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-//
-//  OddsHalfZip
-//
-//////////////////////////////////////////////////////////////////////////////
-
-func average(x Double, y Double) Double { return 0.5 * (x + y) }
-
-func OddsHalfZip(w int, l int) *List {
-  switch {
-    case w == 0: return oneList(w)
-    case l == 0: return oneList(w)
-    default:
-      var ws = cons(0, OddsHalfZip(w - 1, l    ))
-      var ls =         OddsHalfZip(w    , l - 1)
-      return zipWith(average, ws, ls)
+  if (w == 0 || l == 0) {
+    return oneList(w)
+  } else {
+    var ws = cons(0, mapList(func(x Double) Double { return x * pw       }, Odds(pw, w - 1, l    )))
+    var ls =         mapList(func(x Double) Double { return x * (1 - pw) }, Odds(pw, w    , l - 1))
+    return zipWith(func(x Double, y Double) Double { return x + y }, ws, ls)
   }
 }
 
@@ -118,21 +98,20 @@ func OddsHalfZip(w int, l int) *List {
 //////////////////////////////////////////////////////////////////////////////
 
 func averageList(xs *List, ys *List) *List {
-  switch {
-    case xs == nil: return nil
-    case ys == nil: return nil
-    default: return cons(0.5 * (xs.head() + ys.head()), averageList(xs.tail(), ys.tail()))
+  if (xs == nil || ys == nil) {
+    return nil
+  } else {
+    return cons(0.5 * (xs.head() + ys.head()), averageList(xs.tail(), ys.tail()))
   }
 }
 
 func OddsHalf(w int, l int) *List {
-  switch {
-    case w == 0: return oneList(w)
-    case l == 0: return oneList(w)
-    default:
-      var ws = cons(0, OddsHalf(w - 1, l    ))
-      var ls =         OddsHalf(w    , l - 1)
-      return averageList(ws, ls)
+  if (w == 0 || l == 0) {
+    return oneList(w)
+  } else {
+    var ws = cons(0, OddsHalf(w - 1, l    ))
+    var ls =         OddsHalf(w    , l - 1)
+    return averageList(ws, ls)
   }
 }
 
@@ -142,23 +121,17 @@ func OddsHalf(w int, l int) *List {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-func oneArray(n int) []Double {
-  xs := make([]Double, n + 1)
+func oneArray(w int) []Double {
+  xs := make([]Double, w + 1)
   xs[0] = 1
   return xs
 }
 
-func averageArray(xs []Double, ys []Double) []Double {
-  averages := make([]Double, len(xs))
-  for i := 0; i < len(averages); i++ { averages[i] = 0.5 * (xs[i] + ys[i]) }
+func averageArray(w int, ws []Double, ls []Double) []Double {
+  averages := make([]Double, w + 1)
+  averages[0] = 0.5 * ls[0]
+  for i := 1; i <= w; i++ { averages[i] = 0.5 * (ws[i - 1] + ls[i]) }
   return averages
-}
-
-func reverseArray(xs []Double) []Double {
-  n  := len(xs)
-  ys := make([]Double, n)
-  for i := 0; i < n; i++ { ys[i] = xs[n - 1 - i] }
-  return ys
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -168,41 +141,13 @@ func reverseArray(xs []Double) []Double {
 //////////////////////////////////////////////////////////////////////////////
 
 func OddsHalfArray(w int, l int) []Double {
-  switch {
-    case w == 0: return oneArray(w)
-    case l == 0: return oneArray(w)
-    default:
-      var ws = append([]Double{0}, OddsHalfArray(w - 1, l    )...)
-      var ls =                     OddsHalfArray(w    , l - 1)
-      return averageArray(ws, ls)
+  if w == 0 || l == 0 {
+    return oneArray(w)
+  } else {
+      var ws = OddsHalfArray(w - 1, l    )
+      var ls = OddsHalfArray(w    , l - 1)
+      return averageArray(w, ws, ls)
   }
-}
-
-//////////////////////////////////////////////////////////////////////////////
-//
-//  OddsHalfReversedArray
-//
-//////////////////////////////////////////////////////////////////////////////
-
-func oneReversedArray(n int) []Double {
-  xs := make([]Double, n + 1)
-  xs[n] = 1
-  return xs
-}
-
-func oddsHalfReversedArrayInternal(w int, l int) []Double {
-  switch {
-    case w == 0: return oneReversedArray(w)
-    case l == 0: return oneReversedArray(w)
-    default:
-      var ws = append(oddsHalfReversedArrayInternal(w - 1, l    ), 0)
-      var ls =        oddsHalfReversedArrayInternal(w    , l - 1)
-      return averageArray(ws, ls)
-  }
-}
-
-func OddsHalfReversedArray(w int, l int) []Double {
-  return reverseArray(oddsHalfReversedArrayInternal(w, l))
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -211,9 +156,9 @@ func OddsHalfReversedArray(w int, l int) []Double {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-func oneSlice(xs []Double) {
-  xs[0] = 1
-  for i := 1; i < len(xs); i++ { xs[i] = 0; }
+func oneSlice(ws []Double) {
+  ws[0] = 1
+  for i := 1; i < len(ws); i++ { ws[i] = 0; }
 }
 
 func averageSlice(averages []Double, xs []Double, ys []Double) {
@@ -222,10 +167,9 @@ func averageSlice(averages []Double, xs []Double, ys []Double) {
 
 func oddsHalfSliceInternal(ws []Double, l int) {
   var w = len(ws)
-  switch {
-    case w == 1: oneSlice(ws)
-    case l == 0: oneSlice(ws)
-    default:
+  if w == 1 || l == 0 {
+    oneSlice(ws)
+  } else {
       ls := make([]Double, w)
       ws[0] = 0
       oddsHalfSliceInternal(ws[1:], l    )
