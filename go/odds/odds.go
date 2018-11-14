@@ -73,6 +73,12 @@ func zipWith(f func(Double, Double) Double, xs *List, ys *List) *List {
   }
 }
 
+func toList(xs []Double) *List {
+  var ys *List = nil
+  for i := len(xs) - 1; i >= 0 ; i-- { ys = cons(xs[i], ys); }
+  return ys;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 //  Odds
@@ -140,14 +146,18 @@ func averageArray(w int, ws []Double, ls []Double) []Double {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-func OddsHalfArray(w int, l int) []Double {
+func OddsHalfArrayInternal(w int, l int) []Double {
   if w == 0 || l == 0 {
     return oneArray(w)
   } else {
-      var ws = OddsHalfArray(w - 1, l    )
-      var ls = OddsHalfArray(w    , l - 1)
+      var ws = OddsHalfArrayInternal(w - 1, l    )
+      var ls = OddsHalfArrayInternal(w    , l - 1)
       return averageArray(w, ws, ls)
   }
+}
+
+func OddsHalfArray(w int, l int) *List { 
+  return toList(OddsHalfArrayInternal(w, l))
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -178,8 +188,8 @@ func oddsHalfSliceInternal(ws []Double, l int) {
   }
 }
 
-func OddsHalfSlice(w int, l int) []Double {
+func OddsHalfSlice(w int, l int) *List {
   ws := make([]Double, w + 1)
   oddsHalfSliceInternal(ws, l)
-  return ws
+  return toList(ws)
 }

@@ -7,7 +7,21 @@
 package main
 
 import "fmt"
+import "time"
 import "../odds"
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  timer
+//
+//////////////////////////////////////////////////////////////////////////////
+
+func timer(name string, f func() fmt.Stringer) {
+  start := time.Now()
+  xs    := f()
+  delta := time.Now().Sub(start).Seconds()
+  fmt.Printf("%s: %7.2f ms %v\n", name, 1000.0 * delta, xs)
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -20,8 +34,8 @@ func main() {
   var w  = 12
   var l  = 12
 
-  fmt.Printf("Odds                  %v\n", odds.Odds                 (pw, w, l))
-  fmt.Printf("OddsHalf              %v\n", odds.OddsHalf             (    w, l))
-  fmt.Printf("OddsHalfArray         %v\n", odds.OddsHalfArray        (    w, l))
-  fmt.Printf("OddsHalfSlice         %v\n", odds.OddsHalfSlice        (    w, l))
+  timer("Odds         ", func() fmt.Stringer { return odds.Odds         (pw, w, l) } )
+  timer("OddsHalf     ", func() fmt.Stringer { return odds.OddsHalf     (    w, l) } )
+  timer("OddsHalfArray", func() fmt.Stringer { return odds.OddsHalfArray(    w, l) } )
+  timer("OddsHalfSlice", func() fmt.Stringer { return odds.OddsHalfSlice(    w, l) } )
 }
