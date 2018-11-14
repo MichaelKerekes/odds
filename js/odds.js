@@ -144,8 +144,7 @@ function oddsHalf(w, l) {
 
 function array(count, f) {
   const xs = new Float64Array(count)
-  // !!!! arrays are zeroed by default
-  // for (let i = 0; i < count; i++) { xs[i] = f(i) }
+  for (let i = 0; i < count; i++) { xs[i] = f(i) }
   return xs
 }
 
@@ -164,7 +163,6 @@ function arrayToList(xs) {
 function oneArray(w) {
   const xs = new Float64Array(w + 1)
   xs[0] = 1
-  for (let i = 1; i <= w; i++) { xs[i] = 0 }
   return xs
 }
 
@@ -200,7 +198,7 @@ function oddsTest() {
   const l = 12
   time("odds          ", () => odds         (0.5, w, l))
   time("oddsHalf      ", () => oddsHalf     (     w, l))
-  time("oddsHalfArray ", () => oddsHalfArray (     w, l))
+  time("oddsHalfArray ", () => oddsHalfArray(     w, l))
 }
 
 //
