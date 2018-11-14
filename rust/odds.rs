@@ -186,19 +186,29 @@ fn pushFront<A>(x : A, xs : &[A]) -> Array<A> where A : Copy {
 //
 //////////////////////////////////////////////////////////////////////////////
 
-fn oneArray<A>(w : Int) -> Array<A> where A : Num { array((w + 1) as usize, |i| if i == 0 { A::one } else { A::zero }) }
+fn oneArray<A>(w : Int) -> Array<A> where A : Num {
+  let count = (w + 1) as usize;
+  let mut xs = Vec::with_capacity(count);
+  xs.push(A::one);
+  for _ in 1..count { xs.push(A::zero) };
+  xs.into_boxed_slice()
+}
 
-fn averageArray<A>(xs : &[A], ys : &[A]) -> Array<A> where A : Num {
-  array(xs.len(), |i| A::mul(A::half, A::add(xs[i], ys[i])))
+fn averageArray<A>(w : Int, ws : &[A], ls : &[A]) -> Array<A> where A : Num {
+  let count = (w + 1) as usize;
+  let mut averages = Vec::with_capacity(count);
+  averages.push(A::mul(A::half, ls[0]));
+  for i in 1..count { averages.push(A::mul(A::half, A::add(ws[i - 1], ls[i]))) };
+  averages.into_boxed_slice()
 }
 
 fn oddsHalfArrayInternal<A>(w : Int, l : Int) -> Array<A> where A : Num {
   if w == 0 || l == 0 {
     oneArray(w)
   } else {
-    let ws = pushFront(A::zero, &oddsHalfArrayInternal(w - 1, l    ));
-    let ls =                     oddsHalfArrayInternal(w    , l - 1);
-    averageArray(&ws, &ls)
+    let ws = oddsHalfArrayInternal(w - 1, l    );
+    let ls = oddsHalfArrayInternal(w    , l - 1);
+    averageArray(w, &ws, &ls)
   }
 }
 
