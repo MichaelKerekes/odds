@@ -4,9 +4,10 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-package odds
+package main
 
 import "fmt"
+import "time"
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -192,4 +193,34 @@ func OddsHalfSlice(w int, l int) *List {
   ws := make([]Double, w + 1)
   oddsHalfSliceInternal(ws, l)
   return toList(ws)
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  timer
+//
+//////////////////////////////////////////////////////////////////////////////
+
+func timer(name string, f func() fmt.Stringer) {
+  start := time.Now()
+  xs    := f()
+  delta := time.Now().Sub(start).Seconds()
+  fmt.Printf("%s: %7.2f ms %v\n", name, 1000.0 * delta, xs)
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//  main
+//
+//////////////////////////////////////////////////////////////////////////////
+
+func main() {
+  var pw = Double(0.5)
+  var w  = 12
+  var l  = 12
+
+  timer("Odds         ", func() fmt.Stringer { return Odds         (pw, w, l) } )
+  timer("OddsHalf     ", func() fmt.Stringer { return OddsHalf     (    w, l) } )
+  timer("OddsHalfArray", func() fmt.Stringer { return OddsHalfArray(    w, l) } )
+  timer("OddsHalfSlice", func() fmt.Stringer { return OddsHalfSlice(    w, l) } )
 }
