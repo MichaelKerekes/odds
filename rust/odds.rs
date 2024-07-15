@@ -32,9 +32,9 @@ trait Num : Copy {
   const zero : Self;
   const half : Self;
   const one  : Self;
-  fn add(Self, Self) -> Self;
-  fn sub(Self, Self) -> Self;
-  fn mul(Self, Self) -> Self;
+  fn add(x : Self, y : Self) -> Self;
+  fn sub(x : Self, y : Self) -> Self;
+  fn mul(x : Self, y : Self) -> Self;
 }
 
 impl Num for Double {
@@ -66,18 +66,18 @@ fn cons<A>(x : A, xs : &ListRef<A>) -> ListRef<A> { Ref::new(Cons(x, Ref::clone(
 
 impl<A> fmt::Display for List<A> where A : fmt::Display {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "[");
-    writeElements(f, true, self);
+    write!(f, "[")?;
+    writeElements(f, true, self)?;
     write!(f, "]")
   }
 }
 
-fn writeElements<A>(f: &mut fmt::Formatter, first : bool, xs : &List<A>) -> () where A : fmt::Display {
+fn writeElements<A>(f: &mut fmt::Formatter, first : bool, xs : &List<A>) -> fmt::Result where A : fmt::Display {
   match xs {
-    Nil         => (),
+    Nil         => Ok(()),
     Cons(x, xs) => {
-      if !first { write!(f, ", "); }
-      write!(f, "{:8.6}", x);
+      if !first { write!(f, ", ")?; }
+      write!(f, "{:8.6}", x)?;
       writeElements(f, false, xs)
     }
   }
@@ -120,7 +120,7 @@ fn odds<A>(pw : A, w : Int, l : Int) -> ListRef<A> where A : Num {
     oneList(w)
   } else {
     let ws = cons(A::zero, &map(|x| A::mul(*x, pw                ), &odds(pw, w - 1, l    )));
-    let ls =                map(|x| A::mul(*x, A::sub(A::one, pw)), &odds(pw, w    , l - 1));
+    let ls =                map(|x| A::mul(*x, A::sub(A::one, pw)), &odds(pw, w    , l - 1)) ;
     zipWith(|x, y| A::add(*x, *y), &ws, &ls)
   }
 }
@@ -143,7 +143,7 @@ fn oddsHalf<A>(w : Int, l : Int) -> ListRef<A> where A : Num {
     oneList(w)
   } else {
     let ws = cons(A::zero, &oddsHalf(w - 1, l    ));
-    let ls =                oddsHalf(w    , l - 1);
+    let ls =                      oddsHalf(w    , l - 1);
     average(&ws, &ls)
   }
 }
@@ -272,8 +272,8 @@ fn time<A, F>(string : &str, f : F) where F : Fn() -> A, A : fmt::Display {
 //////////////////////////////////////////////////////////////////////////////
 
 fn main() {
-  let w = 12;
-  let l = 12;
+  let w = 3;//12;
+  let l = 2;//12;
 
   time("odds          ", || odds                    (Double::half, w, l));
   time("oddsHalf      ", || oddsHalf      ::<Double>(              w, l));

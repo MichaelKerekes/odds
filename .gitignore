@@ -1,2 +1,7 @@
 go/odds/debug
+ghc/*.exe
+ghc/*.hi
+ghc/*.o
 rust/target
+.vscode
+Cargo.lock

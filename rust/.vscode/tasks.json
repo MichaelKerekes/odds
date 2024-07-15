@@ -20,6 +20,10 @@
         "panel": "shared",
         "showReuseMessage": false
       },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }
