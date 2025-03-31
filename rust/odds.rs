@@ -143,7 +143,7 @@ fn oddsHalf<A>(w : Int, l : Int) -> ListRef<A> where A : Num {
     oneList(w)
   } else {
     let ws = cons(A::zero, &oddsHalf(w - 1, l    ));
-    let ls =                      oddsHalf(w    , l - 1);
+    let ls =                oddsHalf(w    , l - 1);
     average(&ws, &ls)
   }
 }
@@ -272,8 +272,8 @@ fn time<A, F>(string : &str, f : F) where F : Fn() -> A, A : fmt::Display {
 //////////////////////////////////////////////////////////////////////////////
 
 fn main() {
-  let w = 3;//12;
-  let l = 2;//12;
+  let w = 12;
+  let l = 12;
 
   time("odds          ", || odds                    (Double::half, w, l));
   time("oddsHalf      ", || oddsHalf      ::<Double>(              w, l));
